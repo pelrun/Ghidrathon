@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: "temurin"
-        java-version: "17"
+        java-version: "21"
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
@@ -34,14 +34,12 @@ jobs:
     - name: Download Jep
       run: wget ${{ matrix.jep-jar-release-url }} -O ./lib/jep-4.2.0.jar
     - name: Set zip name
-      run: echo "zip_name=Ghidrathon-${GITHUB_REF#refs/tags/}.zip" >> $GITHUB_ENV
+      run: echo "zip_name=Ghidrathon-test.zip" >> $GITHUB_ENV
     - name: Build Ghidrathon
       run: gradle -PGHIDRA_INSTALL_DIR=${{ github.workspace }}/../tmp/ghidra/ghidra_PUBLIC
     - name: Configure and zip
       run: |
-        mv ./dist/$(ls ./dist) ./dist/${{ env.zip_name }}
-        cp ./util/* ./dist
-        (cd ./dist && zip -r ../${{ env.zip_name }} .)
+        mv ./dist/$(ls ./dist) ./${{ env.zip_name }}
     - name: Upload ${{ env.zip_name }} to GH Release
       uses: svenstaro/upload-release-action@2728235f7dc9ff598bd86ce3c274b74f802d2208 # v2
       with:
